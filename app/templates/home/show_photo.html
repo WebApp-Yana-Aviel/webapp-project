@@ -1,0 +1,75 @@
+{% import "bootstrap/utils.html" as utils %}
+{% extends "base.html" %}
+{% block content %}
+<div class="container">
+    <h3>
+        <a href="{{ url_for('home.history') }}" class="navbar-item" >
+           Come back to history
+         </a>
+    </h3>
+
+{% if files_names %}
+<div class="w3-content w3-display-container">
+ <h1 style="text-align:center;">Images</h1>
+   {% for file_name in files_names %} 
+     <div class="w3-display-container mySlides">
+       <br>
+       <p>
+            <a href="{{ url_for('home.delete_video', file_name=file_name) }}" class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-trash"></span></a>
+            <a href="{{ url_for('home.download_video', file_name=file_name) }}" class="btn btn-primary "><span class="glyphicon glyphicon-download-alt"></span></a></li>
+       </p>
+       <br>      
+         <a href="{{ url_for('static', filename='images/Temp/'+ file_name) }}" id="link" >                                     
+              <img src="{{ url_for('static', filename='images/Temp/'+ file_name) }}" >                             
+         </a>
+     </div> 
+   
+    {% endfor %}
+        
+  <button class="w3-button w3-display-left w3-black" onclick="plusSlides(-1)">&#10094;</button>
+  <button class="w3-button w3-display-right w3-black" onclick="plusSlides(1)">&#10095;</button>
+       
+</div>
+{% else %}
+<br>
+<br>
+<br>
+<br>
+<h1> Not images </h1>
+{% endif %}
+</div>
+
+{% endblock %}
+{% block scripts %}
+
+<script type="text/javascript">
+ 
+ var slidePosition = 1;
+ SlideShow(slidePosition);
+
+// forward/Back controls
+ function plusSlides(n) {
+  SlideShow(slidePosition += n);
+ }
+
+//  images controls
+ function currentSlide(n) {
+   SlideShow(slidePosition = n);
+ }
+
+ function SlideShow(n) {
+  var i;
+  var slides = document.getElementsByClassName("mySlides");
+  if (n > slides.length) {slidePosition = 1}
+  if (n < 1) {slidePosition = slides.length}
+  for (i = 0; i < slides.length; i++) {
+      slides[i].style.display = "none";
+  }
+
+  slides[slidePosition-1].style.display = "block";
+  circles[slidePosition-1].className += " enable";
+ } 
+
+</script>
+
+{% endblock %}

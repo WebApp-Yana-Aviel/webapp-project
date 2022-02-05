@@ -1,0 +1,185 @@
+
+{% import "bootstrap/utils.html" as utils %}
+{% extends "base.html" %}
+{% block title %}Routes{% endblock %}
+{% block content %}
+
+<div class="content-section">
+  <br/>
+  {{ utils.flashed_messages() }}
+  <br/>
+
+  <h1 style="text-align:center;">Routes</h1>
+    <hr class="intro-divider" >
+      <div class="center">
+        <a href="{{ url_for('admin.search_route') }}" class="button is-primary is_outlined">
+          <i class="fa fa-search"></i>
+          Search Router
+        </a>
+          <br>
+          {% if file_names %}
+        <table class="table table-striped table-bordered" id="data">
+          <thead>
+                  <tr>
+                    <th width="5%"> No</th>
+                    <th width="20%"> Name of Route </th>
+                    <th width="15%"> Name of mode </th>
+                    <th width="15%"> Date </th>
+                    <th width="15%"> Name of User</th>
+                    <th width="15%"> Is user active?</th>
+                    <th width="15%">Status</th>
+                    <th width="15%"> Date update status</th>
+                    <th width="15%"> Date start route</th>
+                    <th width="20%"> Stations</th>
+                    <th width="20%"> Date end station</th>
+                    <th width="25%"> If done ?</th>
+                    <th width="20%"> Has the shutter opened?</th>
+                    <th width="20%"> Fault </th>
+                    <th width="20%"> Photo </th>
+                    <th width="20%"> Delete route</th>                
+                  </tr>
+          </thead>
+          <tbody>
+              {% for file_name in file_names %}
+                 <tr>
+                      <td> {{ file_name.route.id}} </td>
+                      <td>{{ file_name.route.name}} </td> 
+                      <td> {{ file_name.route.mode.name}}</td>
+                      <td> {{ file_name.route.date_route.strftime('%Y-%m-%d') }}</td>
+                      <td> {{ file_name.user.name}}</td>
+                      <td> {{ file_name.user.is_activity_user}}</td>
+                      <td> {{ file_name.route.status.name}}</td>
+                      <td> {{ file_name.route.date_update.strftime('%Y-%m-%d')}} </td>
+                      <td> {{ file_name.route.date_start.strftime('%Y-%m-%d')}} </td>
+                      <td>
+                       <table>
+                         {% for station in stations %}
+                         <tr>
+                           {% if file_name.route.id==station.route_id %}
+                         <td> {{ station.station.name}}</td>
+                          {% endif %}
+                         </tr>
+                          {% endfor %}
+                       </table>
+     
+                      </td>
+                      <td>
+                        <table>
+                          {% for station in stations %}
+                          <tr>
+                            {% if file_name.route.id==station.route_id %}
+                              {% if station.date_end != None %}
+                               <td> {{ station.date_end.strftime('%Y-%m-%d')}}</td>
+                              {% else %}
+                               <td>   -   </td>
+                           {% endif %}
+                           {% endif %}
+                          </tr>
+                           {% endfor %}
+                        </table>
+      
+                       </td>
+                      <td>
+                        <table>
+                          {% for station in stations %}
+                          <tr>
+                            {% if file_name.route.id==station.route_id %} 
+                              {% if station.station_id == station.station.id %}
+                                 <td> {{ station.is_Done }} </td>     
+                                  {% if file_name.route.status_id == 2 %}
+                                     {% if station.is_Done == 0 %}
+                                      <td> 
+                                        <a href="{{ url_for('admin.delete_station_route',route_id=file_name.route.id,station_id=station.station.id) }}">
+                                          <i class="fa fa-trash"></i> Delete 
+                                       </a>
+                                      </td>
+                                    {% endif %}
+                                  {% endif %}
+                              {% endif %}
+                            {% endif %}
+                          </tr>
+                           {% endfor %}
+                        </table>
+      
+                       </td>
+                       <td>
+                        <table>
+                          {% for station in stations %}
+                          <tr>
+                            {% if file_name.route.id==station.route_id %}
+                            
+                          <td> {{ station.is_Open }}</td>
+                        
+                           {% endif %}
+                          </tr>
+                           {% endfor %}
+                        </table>
+      
+                       </td>
+                       <td>
+                        <table>
+                          {% for log in logs %}
+                          <tr>
+                            {% if log.route_id==file_name.route.id %}
+                            {% if file_name.route.status_id==4  %}
+                          <td> {{ log.fault.name }}</td>
+                            {% endif %}
+                            {% endif %}
+                          </tr>
+                           {% endfor %}
+                        </table>
+      
+                       </td>
+                       
+                       <td>
+                        <table>
+                          {% for photo in photos %}
+                            <tr>
+                              {% if file_name.route_id==photo.route_id %}
+                                <td><a href="{{ url_for('admin.show_picture',id=file_name.route_id) }}">
+                                  <i class="fa fa-camera"></i> Photo 
+                                 </a></td>
+                        
+                              {% endif %}
+                            </tr>
+                          {% endfor %}
+                    
+                        </table>
+                      </td>
+      
+                  <td>
+                    <a href="{{ url_for('admin.delete_route',id=file_name.route.id) }}">
+                      <i class="fa fa-trash"></i> Delete 
+                    </a>
+                  </td>
+
+           {% endfor %}
+          </tbody>
+        </table>
+    </div>
+    <div style="text-align: center">
+        {% else %}
+          <div style="text-align: center">
+            <h3> No route have been added. </h3>
+            <hr class="intro-divider">
+        {% endif %}
+         
+          </div>
+    </div>
+</div>
+
+
+{% endblock %}
+{% block scripts %}
+
+<script >
+   $(document).ready(function () {
+      $('#data').DataTable();
+    });
+ 
+
+</script>
+{% endblock%}
+    
+
+

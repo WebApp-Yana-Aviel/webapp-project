@@ -1,0 +1,67 @@
+{% import "bootstrap/utils.html" as utils %}
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1 class="title is-3">
+    Web Controlled- Manually 
+    Robot AAYA1.0
+</h1>
+
+<!--form id="modeForm" name="modeForm" method="post" action="{{  url_for('home.profile_mode') }}">
+    <div class="control" >
+        <label class="radio">
+          <input type="radio" name="mode" id="manualMode" value="ManualState"  required>
+            Manual State     
+        </label> &nbsp; &nbsp; &nbsp;    
+        <label class="radio">
+           <input type="radio" name="mode" id="automaticMode" value="AutomaticState" required>
+             Automatic State
+        </label>
+    </div>
+</form-->
+<div class="content-section" id="modeSel">
+  <br/>
+  {{ utils.flashed_messages() }}
+  <br/>
+</div>
+<form id="profileForm" action="{{  url_for('home.profile_mode') }}"  method="post">
+    <div class="control" >
+        <label class="radio">
+          <input type="radio" name="mode" id="manualMode" onchange="SetData(this);" onClick="this.form.submit();" value="ManualState" >
+           <h4>Manual State </h4>     
+        </label> &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  
+        <label class="radio">
+           <input type="radio" name="mode" id="automaticMode" onchange="SetData(this);" onClick="this.form.submit();" value="AutomaticState" >
+             <h4>Automatic State</h4>
+        </label>
+    </div>
+
+<div class="container">
+    {% block page_content %} {% endblock %}
+</div>
+</form>
+{% endblock %}
+{% block scripts %}
+<script type="text/javascript">
+    function SetData (elem) { 
+    localStorage.setItem(elem.getAttribute('name'), elem.getAttribute('id'));
+   } 
+   function GetData (item) { 
+    return localStorage.getItem(item); 
+  }
+
+window.onload = function() {
+   
+    var Item = GetData ('type');
+  
+ 
+    if(Item != undefined) {
+        document.getElementById(Item).checked = true;
+      } 
+}
+
+</script>
+
+
+{% endblock %}

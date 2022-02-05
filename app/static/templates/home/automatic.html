@@ -1,0 +1,192 @@
+{% import "bootstrap/utils.html" as utils %}
+{% extends "base.html" %}
+{% block content %}
+
+    <h1 class="title">Automatic State</h1>
+    <form id="automaticForm" name="automaticMode" method="post" action="{{ url_for('home.automatic_state') }}" >
+    <div class="table-container">
+      <table class="table">
+           <tr>
+              
+                <input  class="is-checkradio" type="checkbox" id="closeCamera" onclick="CloseCamera()">
+                <label for="closeCamera"> Close camera</label>    
+               
+           </tr>
+           <tr>
+           <td>
+              <div class="field" id="cameraAruco" style="float:left">
+                  <input class="button is-primary is-outlined" type="submit" name="aruco" value="Aruco Live" id="arucoV"/>
+                  <input class="button is-primary is-outlined" type="submit" name="stopAruco" value="Stop Aruco" id="stopAruco"/>        
+                   
+                  <img src="{{ url_for('home.video_feed') }}" height="50%">
+              </div>
+           </td>
+           </tr>
+           <tr>
+               <td>              
+                      <div class="content-section" id="modeSel">
+                          <br/>
+                          {{ utils.flashed_messages() }}
+                          <br/>
+                      </div>
+               
+                      {% if modes %}  
+                      <label> Please select a mode :</label> 
+                          <div class="select is-primary">                        
+                               <select id="modeSelect"  class="form-control" name="modeSelect" id="all_modes">  
+                                {% for mode in modes %}
+                                 <option value="{{mode.id}}" selected>
+                                  {{ mode.name_mode }}                       
+                                 </option>
+                               {% endfor %}
+                               </select>
+                         </div> 
+      
+                      {% endif %}  
+                      <br>
+                 
+                 <div class="content-section" id="statSel" >
+                        <br/>
+                        {{ utils.flashed_messages() }}
+                        <br/>
+                  </div>
+               </td>
+          
+           </tr>
+               <tr class="information_json_plus" >
+                {% if stations %}
+                <!--td>
+                        <label> Please select a station :</label> 
+                         <div class="select is-primary" id="select_station" >   
+                             <select id="stationSelect" class="form-control" onchange="saveData(this);" id="all_stations">
+                               {% for station in stations %}
+                                <option value="{{station.id}}" selected>
+                                {{ station.name_station }}                       
+                                </option>
+                                {% endfor %}
+                             </select>
+                         </div>
+                       
+               </td-->
+               
+               {% endif %}
+               <td><span class="btn btn-success plus pull-right">+</span></td>
+               <script>
+                   var count=0;
+                   alert(count);
+                   jQuery('.plus').click(function(){
+                   count++;
+                   jQuery('.information_json_plus').before(
+                  '<tr>'+'<td ><label> Please select a station :</label>'+ 
+                         '<div class="select is-primary" id="select_station" >'+   
+                             '<select id="stationSelect" class="form-control" name="stationSelect">'+
+                              ' {% for station in stations %}'+
+                               ' <option value="{{station.id}}" selected>'+
+                                '{{ station.name_station }}'+                       
+                                '</option>'+
+                               ' {% endfor %}'+
+                             '</select>'+
+                         '</div></td>' +
+                  '<td><span class="btn btn-danger minus pull-right">–</span></td>'+'</tr>' );
+                  if(count > 0 && count < 6)
+                  {
+                   buttonSelect.disabled=false;
+                   }
+                 else{
+                  buttonSelect.disabled=true;
+                   }});
+                 jQuery(document).on('click', '.minus', function(){
+                 count--;
+                 jQuery( this ).closest( 'tr' ).remove(); 
+                 alert(count);
+                  });
+               </script>
+                  
+               </tr>
+       
+              <td>
+             
+               <button class="button is-primary is-outlined"  id="select_route" type="submit"  >Ok</button>
+                  <div id="processed_results">
+                          Here we display some output based on the selection
+                  </div>
+                  
+              </td>
+      </table>
+    </div>
+    </form>
+    
+
+
+
+<script type="text/javascript">
+
+var buttonAruco = document.getElementById("arucoV");
+var buttonStop = document.getElementById("stopAruco");
+var buttonSelect = document.getElementById("select_route");
+buttonStop.disabled = true;
+buttonSelect.disabled=true;
+buttonAruco.onclick = function() { 
+    // XMLHttpRequest
+    buttonAruco.disabled = true;
+    buttonStop.disabled = false;
+    var xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState == 4 && xhr.status == 200) {
+            // alert(xhr.responseText);
+        }
+    }
+    xhr.open("POST", "/arucoS");
+    xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+    xhr.send(JSON.stringify({ status: "true" }));
+};
+
+
+buttonStop.onclick = function() {
+    buttonAruco.disabled = false;
+    buttonStop.disabled = true;   
+    var xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState == 4 && xhr.status == 200) {
+            // alert(xhr.responseText);
+        }
+    }
+    xhr.open("POST", "/arucoS");
+    xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+    xhr.send(JSON.stringify({ status: "false" }));
+} ;
+function CloseCamera() {
+  // Get the checkbox
+  var checkBox = document.getElementById("closeCamera");
+  // Get the output text
+  var divAruco=document.getElementById("cameraAruco");
+  var xhr = new XMLHttpRequest();
+  // If the checkbox is checked, display the output text
+  if (checkBox.checked == true){
+    divAruco.hidden=true;
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState == 4 && xhr.status == 200) {
+            // alert(xhr.responseText);
+        }
+    }
+    xhr.open("POST", "/closeCamera");
+    xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+    xhr.send(JSON.stringify({ status: "true" }));
+  } else {
+    divAruco.hidden=false;
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState == 4 && xhr.status == 200) {
+            // alert(xhr.responseText);
+        }
+    }
+    xhr.open("POST", "/closeCamera");
+    xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+    xhr.send(JSON.stringify({ status: "false" }));
+  }
+};
+
+ 
+
+
+</script>
+{% endblock %}

@@ -1,0 +1,328 @@
+
+{% import "bootstrap/utils.html" as utils %}
+{% extends "base.html" %}
+{% block content %}
+
+
+    <h1 class="title">Manual State</h1>
+     
+        <div class="block" style="float: left;">
+                <input class="button is-link is-outlined" type="button" value="Stop/Start" id="stopp" name="stopp" onClick="reply_click(this.id)"/>
+                <input class="button is-link is-outlined" type="button" value="Capture" id="capture" name="capture" onClick="reply_click(this.id)"/>
+                <input class="button is-link is-outlined" type="button" value="Grey" id="grey" name="grey" onClick="reply_click(this.id)"/>
+                <input class="button is-link is-outlined" type="button" value="Face Only" id="face" name="face" onClick="reply_click(this.id)"/>
+                <input class="button is-link is-outlined" type="button" value="Start/Stop Recording" id="record" name="record" onClick="reply_click(this.id)"/>
+                <input class="button is-link is-outlined" type="button" value="Aruco" id="aruco" name="aruco" onClick="reply_click(this.id)" />
+                <input class="button is-link is-outlined" type="button" value="Detect Face" id="facee" name="facee" onClick="reply_click(this.id)" />      
+        </div>
+                <img src="{{ url_for('home.video_feed') }}" style="float: left;">
+            
+          
+        <div style="float:right">
+
+        </div>
+       
+              <div style="height:400px; width:300px; float: right;">
+                <center>
+                  
+                 <a href="#" id="up" style="font-size:30px;text-decoration:none;"> <i class="fa fa-arrow-up"></i><br>Forward</a><br><br></center>
+                 <a href="#" id="left" style="font-size:30px;text-decoration:none;" >  <i class="fa fa-arrow-left"></i>&nbsp;&nbsp;&nbsp;Left</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+                 <a href="#" id="right" style="font-size:30px; text-decoration:none;"> Right &nbsp;&nbsp;&nbsp; <i class="fa fa-arrow-right"></i></a><br><br>
+                 <a href="#" id="down" style="font-size:30px;text-decoration:none;"> Backward<br>  <i class="fa fa-arrow-down"></i></a></center> 
+              
+
+              </div>
+
+    
+     
+{% endblock %} 
+{% block scripts %}
+<script >
+$( document ).ready(function(){
+    $("#down").on("mousedown", function() {
+     $.get('/down_side');
+     }).on('mouseup', function() {
+     $.get('/stop');
+    });
+    $("#up").on("mousedown", function() {
+     $.get('/up_side');
+     }).on('mouseup', function() {
+     $.get('/stop');
+    });
+    $("#left").on("mousedown", function() {
+     $.get('/left_side');
+     }).on('mouseup', function() {
+     $.get('/stop');
+    });
+    $("#right").on("mousedown", function() {
+     $.get('/right_side');
+     }).on('mouseup', function() {
+     $.get('/stop');
+    });
+    
+});
+      
+var buttonStart = document.getElementById("stopp");
+var buttonCapture = document.getElementById("capture");
+var buttonAruco = document.getElementById("aruco");
+var buttonFace = document.getElementById("face");
+var buttonFace1 = document.getElementById("facee");
+var buttonGrey = document.getElementById("grey");
+var buttonRec = document.getElementById("record");
+//var buttonDrive=document.getElementById("drive");
+//var buttonUp=document.getElementById("up");
+//var buttonDown=document.getElementById("down");
+//var buttonLeft=document.getElementById("left");
+//var buttonRight=document.getElementById("right");
+
+
+buttonAruco.disabled=false;
+buttonCapture.disabled=false;
+buttonFace.disabled=false;
+buttonFace1.ariaDisabled=false;
+buttonRec.disabled=false;
+buttonStart.disabled=false;
+buttonGrey.disabled=false;
+
+var count=0;
+
+function reply_click(clicked_id)
+{
+    switch (clicked_id)
+    {
+        case "stopp": 
+                    
+                     if(!this.clickCount) this.clickCount=0;
+                        this.clickCount++;
+                   
+                     if(this.clickCount==1)
+                     {
+                        buttonFace.disabled=true;
+                        buttonFace1.disabled=true;
+                        buttonGrey.disabled=true;
+                        buttonRec.disabled=true;
+                        buttonCapture.disabled=true;
+                        buttonAruco.disabled=true;
+
+                    }
+                    if(this.clickCount==2)
+                    {
+                        buttonAruco.disabled=false;
+                        buttonCapture.disabled=false;
+                        buttonFace.disabled=false;
+                        buttonFace1.disabled=false;
+                        buttonRec.disabled=false;
+                        buttonGrey.disabled=false;
+                        this.clickCount=null
+                    }
+                    $.ajax({
+			            url: "{{ url_for('home.profile_task') }}",
+			            data: JSON.stringify(clicked_id),
+			            type: 'POST',
+                        contentType: 'application/json;charset=UTF-8'
+                    });
+                    break;
+        case "record": 
+                    if(!this.clickCount) this.clickCount=0;
+                        this.clickCount++;
+                    
+                     if(this.clickCount==1)
+                     {
+                        buttonFace.disabled=true;
+                        buttonFace1.disabled=true;
+                        buttonGrey.disabled=true;
+                        buttonStart.disabled=true;
+                        buttonCapture.disabled=true;
+                        buttonAruco.disabled=true;
+
+                    }
+                    if(this.clickCount==2)
+                    {
+                        this.clickCount=null;
+                        buttonAruco.disabled=false;
+                        buttonCapture.disabled=false;
+                        buttonFace.disabled=false;
+                        buttonFace1.disabled=false;
+                        buttonStart.disabled=false;
+                        buttonGrey.disabled=false;
+                      }
+                      $.ajax({
+			            url: "{{ url_for('home.profile_task') }}",
+                        data: JSON.stringify(clicked_id),
+			            type: 'POST',
+                        dataType:'json',
+                        contentType: 'application/json;charset=UTF-8'
+		      
+		            });
+                      break;
+        case "aruco": 
+                     if(!this.clickCount) this.clickCount=0;
+                        this.clickCount++;
+                   
+                     if(this.clickCount==1)
+                     {
+                        buttonFace.disabled=true;
+                        buttonFace1.disabled=true;
+                        buttonGrey.disabled=true;
+                        buttonRec.disabled=true;
+                        buttonCapture.disabled=true;
+                        buttonStart.disabled=true;
+
+                    }
+                    if(this.clickCount==2)
+                    {
+                        this.clickCount=null;
+                        buttonStart.disabled=false;
+                        buttonCapture.disabled=false;
+                        buttonFace.disabled=false;
+                        buttonFace1.disabled=false;
+                        buttonRec.disabled=false;
+                        buttonGrey.disabled=false;
+                    
+                      }
+                      $.ajax({
+			            url: "{{ url_for('home.profile_task') }}",
+                        data: JSON.stringify(clicked_id),
+			            type: 'POST',
+                        dataType:'json',
+                        contentType: 'application/json;charset=UTF-8'
+		        
+		            });
+                      break;
+        case "face":    
+                      if(!this.clickCount) this.clickCount=0;
+                        this.clickCount++;
+                      if(this.clickCount==1)
+                     {
+                        buttonStart.disabled=true;
+                        buttonFace1.disabled=true;
+                        buttonGrey.disabled=true;
+                        buttonRec.disabled=true;
+                        buttonCapture.disabled=true;
+                        buttonAruco.disabled=true;
+
+                    }
+                    if(this.clickCount==2)
+                    {
+                        this.clickCount=null;
+                        buttonAruco.disabled=false;
+                        buttonCapture.disabled=false;
+                        buttonStart.disabled=false;
+                        buttonFace1.disabled=false;
+                        buttonRec.disabled=false;
+                        buttonGrey.disabled=false;
+                    
+                      }
+                      $.ajax({
+			            url: "{{ url_for('home.profile_task') }}",
+                        data: JSON.stringify(clicked_id),
+			            type: 'POST',
+                        dataType:'json',
+                        contentType: 'application/json;charset=UTF-8'
+		         
+		            });
+                      break;
+        case "grey": 
+                    $.ajax({
+			            url: "{{ url_for('home.profile_task') }}",
+			            data: JSON.stringify(clicked_id),
+			            type: 'POST',
+                        dataType:'json',
+                        contentType: 'application/json;charset=UTF-8'
+		      
+		            });
+                      break;
+        case "facee": 
+                       if(!this.clickCount) this.clickCount=0;
+                         this.clickCount++;
+                     if(this.clickCount==1)
+                     {
+                        buttonFace.disabled=true;
+                        buttonStart.disabled=true;
+                        buttonGrey.disabled=true;
+                        buttonRec.disabled=true;
+                        buttonCapture.disabled=true;
+                        buttonAruco.disabled=true;
+
+                    }
+                    if(this.clickCount==2)
+                    {
+                        this.clickCount=null;
+                        buttonAruco.disabled=false;
+                        buttonCapture.disabled=false;
+                        buttonFace.disabled=false;
+                        buttonStart.disabled=false;
+                        buttonRec.disabled=false;
+                        buttonGrey.disabled=false;
+                       
+                      }
+                      $.ajax({
+			            url: "{{ url_for('home.profile_task') }}",
+			            data: JSON.stringify(clicked_id),
+			            type: 'POST',
+                        dataType:'json',
+                        contentType: 'application/json;charset=UTF-8'
+		       
+		            });
+                      break;
+        case "capture":
+        $.ajax({
+			            url: "{{ url_for('home.profile_task') }}",
+			            data: JSON.stringify(clicked_id),
+			            type: 'POST',
+                        dataType:'json',
+                        contentType: 'application/json;charset=UTF-8'
+		      
+		            });
+                      break;
+                      /*
+       case "drive": 
+                    
+                     if(!this.clickCount) this.clickCount=0;
+                        this.clickCount++;
+                   
+                     if(this.clickCount==1)
+                     {
+                        buttonFace.disabled=true;
+                        buttonFace1.disabled=true;
+                        buttonGrey.disabled=true;
+                        buttonRec.disabled=true;
+                        buttonCapture.disabled=true;
+                        buttonAruco.disabled=true;
+                        buttonStart.disabled=true;
+                        buttonUp.disabled=true;
+                        buttonDown.disabled=true;
+                        buttonLeft.disabled=true;
+                        buttonRight.disabled=true;
+
+                    }
+                    if(this.clickCount==2)
+                    {
+                        buttonAruco.disabled=false;
+                        buttonCapture.disabled=false;
+                        buttonFace.disabled=false;
+                        buttonFace1.disabled=false;
+                        buttonRec.disabled=false;
+                        buttonStart.disabled=false;
+                        buttonGrey.disabled=false;
+                        buttonUp.disabled=false;
+                        buttonDown.disabled=false;
+                        buttonLeft.disabled=false;
+                        buttonRight.disabled=false;
+                        this.clickCount=null
+                    }
+                    $.ajax({
+			            url: "{{ url_for('home.profile_task') }}",
+			            data: JSON.stringify(clicked_id),
+			            type: 'POST',
+                        contentType: 'application/json;charset=UTF-8'
+                    });
+                    break;*/
+
+    }
+
+};
+
+
+</script>
+{% endblock %}

@@ -1,0 +1,167 @@
+{% import "bootstrap/utils.html" as utils %}
+{% extends "base.html" %}
+{% block content %}
+
+    <h1 class="title">Automatic State</h1>
+    <form id="automaticForm" name="automaticMode" method="post" action="{{ url_for('home.automatic_state') }}" >
+    <div class="table-container">
+      <table class="table">
+           <tr>
+              
+                <input  class="is-checkradio" type="checkbox" id="closeCamera" onclick="CloseCamera()">
+                <label for="closeCamera"> Close camera</label>    
+               
+           </tr>
+           <tr>
+           <td>
+              <div class="field" id="cameraAruco" style="float:left">            
+                  <img src="{{ url_for('home.video_feed') }}"  width="500" height="600">
+              </div>
+           </td>
+           </tr>
+           <tr>
+               <td>              
+                      <div class="content-section" id="modeSel">
+                          <br/>
+                          {{ utils.flashed_messages() }}
+                          <br/>
+                      </div>
+               
+                      {% if modes %}  
+                      <label> Please select a mode :</label> 
+                          <div class="select is-primary">                        
+                               <select id="modeSelect"  class="form-control" name="modeSelect" id="all_modes">  
+                                {% for mode in modes %}
+                                 <option value="{{ mode.id }}" selected>
+                                  {{ mode.name }}                       
+                                 </option>
+                               {% endfor %}
+                               </select>
+                         </div> 
+                      {% endif %}  
+                      <br>
+                 
+                 <div class="content-section" id="statSel" >
+                        <br/>
+                        {{ utils.flashed_messages() }}
+                        <br/>
+                       
+                  </div>
+               </td>
+          
+           </tr>
+               <tr class="information_json_plus" >
+                {% if stations %}
+                <!--td>
+                        <label> Please select a station :</label> 
+                         <div class="select is-primary" id="select_station" >   
+                             <select id="stationSelect" class="form-control" onchange="saveData(this);" id="all_stations">
+                               {% for station in stations %}
+                                <option value="{{station.id}}" selected>
+                                {{ station.name_station }}                       
+                                </option>
+                                {% endfor %}
+                             </select>
+                         </div>
+                       
+               </td-->
+               
+               {% endif %}
+               <td><span class="btn btn-success plus pull-right">+</span></td>
+               <script>
+                   var count=0;
+                   jQuery('.plus').click(function(){
+                   count++;
+                   jQuery('.information_json_plus').before(
+                  '<tr>'+'<td ><label> Please select a station :</label>'+ 
+                         '<div class="select is-primary" id="select_station" >'+   
+                             '<select id="stationSelect" class="form-control" name="stationSelect">'+
+                              ' {% for station in stations %}'+
+                               ' <option value="{{station.id}}" selected>'+
+                                '{{ station.name }}'+                       
+                                '</option>'+
+                               ' {% endfor %}'+
+                             '</select>'+
+                         '</div></td>' +
+                  '<td><span class="btn btn-danger minus pull-right">–</span></td>'+'</tr>' );
+                  if(count > 0 && count < 6)
+                  {
+                      buttonSelect.disabled=false;
+                      buttonSaveRoute.disabled=false;
+                   }
+                 else{
+                      buttonSelect.disabled=true;
+                      buttonSaveRoute.disabled=true;
+                   }});
+                 jQuery(document).on('click', '.minus', function(){
+                 count--;
+                 jQuery( this ).closest( 'tr' ).remove(); 
+                 if(count > 0 && count < {{ num_station}})
+                  {
+                      buttonSelect.disabled=false;
+                      buttonSaveRoute.disabled=false;
+                   }
+                 else{
+                      buttonSelect.disabled=true;
+                      buttonSaveRoute.disabled=true;
+                   }});
+                 
+               </script>
+                  
+               </tr>
+       
+              <td>
+               <button class="button is-primary is-outlined"  id="select_route" name="select_route" value="select_route" type="submit"  >Start the route now</button>
+               <button class="button is-primary is-outlined"  id="save_route" name="save_route" value="save_route" type="submit"  >Save the router</button>     
+              </td>
+      </table>
+    </div>
+    </form>
+    
+
+{% endblock%}
+
+{% block scripts %}
+<script type="text/javascript">
+
+var buttonSelect = document.getElementById("select_route");
+var buttonSaveRoute=document.getElementById("save_route");
+var camera = document.getElementById("cameraAruco");
+buttonSelect.disabled=true;
+buttonSaveRoute.disabled=true;
+camera.hidden =false;
+
+function CloseCamera() {
+  // Get the checkbox
+  var checkBox = document.getElementById("closeCamera");
+  // Get the output text
+  var xhr = new XMLHttpRequest();
+  // If the checkbox is checked, display the output text
+  if (checkBox.checked == true){
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState == 4 && xhr.status == 200) {
+             //alert(xhr.responseText);
+        }
+    }
+    camera.hidden=true;
+    xhr.open("POST", "/closeCamera");
+    xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+    xhr.send(JSON.stringify({ status: "true" }));
+  } else {
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState == 4 && xhr.status == 200) {
+            // alert(xhr.responseText);
+        }
+    }
+    xhr.open("POST", "/closeCamera");
+    xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+    xhr.send(JSON.stringify({ status: "false" }));
+    camera.hidden=false;
+  }
+};
+
+ 
+
+
+</script>
+{% endblock %}

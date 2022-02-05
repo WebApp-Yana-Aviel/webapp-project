@@ -1,0 +1,53 @@
+
+
+{% extends "base.html" %}
+{% block title %}Reset Password{% endblock %}
+
+
+{% block content %}
+{% block body %}
+<div class="column is-4 is-offset-4">
+<p>
+    Please enter the email that you registered with.
+    You will be sent an email that will allow you to reset your password.
+</p>
+<form method="POST">
+    {{ form.hidden_tag() }}
+    <fieldset class="form-group">
+        <legend class="border-bottom mb-4">Reset Password</legend>
+        <div class="form-group">
+            {{ form.password.label(class="form-control-label") }}
+            {% if form.password.errors %}
+                {{ form.password(class="form-control form-control-lg is-invalid") }}
+                <div class="invalid-feedback">
+                    {% for error in form.password.errors %}
+                        <span  style="color: red;">{{ error }}</span>
+                    {% endfor %}
+                </div>
+            {% else %}
+                {{ form.password(class="form-control form-control-lg") }}
+            {% endif %}
+        </div>
+        <div class="form-group">
+            {{ form.confirm_password.label(class="form-control-label") }}
+            {% if form.confirm_password.errors %}
+                {{ form.confirm_password(class="form-control form-control-lg is-invalid") }}
+                <div class="invalid-feedback">
+                    {% for error in form.confirm_password.errors %}
+                        <span  style="color: red;">{{ error }}</span>
+                    {% endfor %}
+                </div>
+            {% else %}
+                {{ form.confirm_password(class="form-control form-control-lg") }}
+            {% endif %}
+        </div>
+    </fieldset>
+    <div class="form-group">
+        {{ form.submit(class="button is-primary is-outline") }}
+    </div>
+</form>
+
+</div>
+
+{% endblock %}
+{% endblock %}

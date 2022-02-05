@@ -1,0 +1,112 @@
+
+<!DOCTYPE html>
+<html lang="en" class="has-navbar-fixed-top">
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>WebAppRobot</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <!--link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet"-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.2/css/bulma.min.css" />
+    <!--script type="text/javascript" src="https://www.dropbox.com/static/api/2/dropins.js" id="dropboxjs" 
+        data-app-key="zs4yt7j0owsjpxw"-->
+    </script>
+    <link href="../static/js/node_modules/bulma-calendar/dist/css/bulma-calendar.min.css" rel="stylesheet">
+    <script src="../static/js/node_modules/bulma-calendar/dist/js/bulma-calendar.min.js"></script>
+    <link rel="stylesheet" href="../static/css/history_images.css">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+   
+
+</head>
+<body>
+  <div class="hero-head">
+  <nav class="navbar is-fixed-top is-dark is-small" role="navigation" aria-label="main navigation">
+    <div class="container">
+        <div id="navbarMenuHeroA" class="navbar-menu is-activate">
+           <div class="navbar-end">
+                            {% if current_user.is_authenticated %}
+                                {% if current_user.is_admin %} 
+                                  <a class="navbar-item is-active" href="{{ url_for('home.admin_dashboard') }}" class="navbar-item" ><i class="fas fa-home"></i>Dashboard</a>
+                                  <a href="{{ url_for('admin.list_users') }}" class="navbar-item">Users</a>
+                                  <a href="{{ url_for('admin.list_modes') }}" class="navbar-item">Modes</a>
+                                  <a href="{{ url_for('admin.list_stations') }}" class="navbar-item">Station</a>
+                                  <a href="{{ url_for('admin.list_faults') }}" class="navbar-item">Faults</a>
+                                {% else %}
+                                     <a href="{{ url_for('home.profile') }}" class="navbar-item" >
+                                      Profile
+                                     </a>
+                                     <a href="{{ url_for('home.history') }}" class="navbar-item" >
+                                      History
+                                     </a>
+                                {% endif %}
+                                  <a href="{{ url_for('auth.logout') }}"class="navbar-item">Logout</a>
+                                  <a><i class="fa fa-user"></i>  Hi, {{ current_user.name }}!</a>
+                        
+                            {% else %}
+                                  <a class="navbar-item is-active" href="{{ url_for('home.index') }}" class ="navbar-item">
+                                    <i class="fas fa-home"></i>
+                                     Home
+                                  </a>    
+                                  <a href="{{ url_for('auth.login') }}" class="navbar-item" >
+                                     Login
+                                  </a>
+                                  <a href="{{ url_for('auth.register') }}" class="navbar-item">
+                                    Sign Up
+                                  </a>
+                                  <a href="{{ url_for('auth.reset_request') }}" class="navbar-item">
+                                     Reset Password
+                                  </a>
+                            {% endif %}
+           </div>
+        </div>
+      </div>
+   
+    </nav>
+  </div>
+
+   
+    <!--/section-->
+  
+    <section class="hero is-primary is-fullheight">
+   
+    <div class="hero-body ">
+        <div class="container has-text-centered">       
+           {% block content %}
+         
+           {% endblock %}
+            </div>
+     </div>
+   <section>
+   <footer class="footer ">
+      <span class="tag">
+        {% block title %}
+        {% if title %}
+        <p> WebRobot -{{title}}
+        {% else %}
+           WebRobot</span> 
+        {% endif %}
+        {% endblock %}
+      </div>
+         <div class="container has-text-centered">
+          <!--div class="navbar-menu">
+            <div class="navbar-start">
+                        <ul class="list-inline">
+                            <a href="{{ url_for('home.index') }}" class="navbar-item">Home</a>
+                           
+                            {% if current_user.is_authenticated %}
+                             <a href="{{ url_for('auth.logout') }}" class="navbar-item">Logout</a>
+                            {% else %}
+                             <a href="{{ url_for('auth.register') }}" class="navbar-item">Register</a>
+                            
+                             <a href="{{ url_for('auth.login') }}" class="navbar-item" >Login</a>
+                            {% endif %}</div-->
+                           <p class="copyright text-muted small">Copyright © 2021. All Rights Reserved</p>
+            </div>
+   
+    </footer>
+
+</body>
+</html>

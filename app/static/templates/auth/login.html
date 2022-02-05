@@ -1,0 +1,37 @@
+
+<!-- app/templates/auth/login.html -->
+
+{% import "bootstrap/utils.html" as utils %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% extends "base.html" %}
+{% block title %}Log In{% endblock %}
+
+{% block content %}
+{% block body %}
+<div class="column is-4 is-offset-4">
+<div class="box">
+   <!--div class="content-section"-->
+  {% with messages=get_flashed_messages() %}
+    {% if messages %}
+      <div class="notification is-danger">
+         <br/>
+         {{ utils.flashed_messages() }}
+         <br/>
+      </div>
+      {% endif %}
+    {% endwith %} 
+    </div>
+
+    <div class="field">
+      <div class="control">
+        <div class="center" >
+          <h1>Login to your account</h1>
+            <br/>
+            {{ wtf.quick_form(form) }}
+       </div>
+      </div>
+    </div>
+</div>
+
+{% endblock %}
+{% endblock %}

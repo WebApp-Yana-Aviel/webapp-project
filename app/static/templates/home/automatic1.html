@@ -1,0 +1,88 @@
+{% import "bootstrap/utils.html" as utils %}
+{% extends "base.html" %}
+{% block content %}
+{{ super() }}
+<div class="column is-4 is-offset-4">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css" rel="stylesheet"> 
+    <h1 class="title">Automatic State</h1>
+    <div class="contect-section" float:left>
+      
+        <form method="POST" action="/home">
+         
+               <img src="{{ url_for('home.video_feed') }}">
+               <a href="#" id="aruco" >Aruco</a>
+               <a href="#" id="stopAruco" >Stop Aruco</a>
+      
+                  <div  class="field" style="height:400px; width:300px; float:right;">
+                      <h2>Web Controlled- Auto </h2>
+                      <h2>Robot AAYA1.0</h2><br><br>
+                      <div class="content-section">
+                        <br/>
+                        {{ utils.flashed_messages() }}
+                        <br/>
+                        {% if modes %}  
+                        <div class="dropdown">
+                          <div class="dropdown-trigger">
+                            <button class="button" aria-haspopup="true" aria-controls="dropdown-menu3">
+                              <span>Mode</span>
+                              <span class="icon is-small">
+                                <i class="fas fa-angle-down" aria-hidden="true"></i>
+                              </span>
+                            </button>
+                          </div>
+                          <div class="dropdown-menu" id="dropdown-mode" role="menu">
+                            <div class="dropdown-content">   
+                              {% for mode in modes %}
+                            
+                              
+                            <a href="#" class="dropdown-item">
+                                {{ mode.name }}                       
+                            </a>
+                                {% endfor %}
+                            </div>
+                            </div>  
+                                    
+                       </div>
+                      </div>
+                      {% endif %}
+                      {% if stations %}  
+                        <div class="dropdown">
+                          <div class="dropdown-trigger">
+                            <button class="button" aria-haspopup="true" aria-controls="dropdown-menu3">
+                              <span>Stations</span>
+                              <span class="icon is-small">
+                                <i class="fas fa-angle-down" aria-hidden="true"></i>
+                              </span>
+                            </button>
+                          </div>
+                          <div class="dropdown-menu" id="dropdown-station" role="menu">
+                            <div class="dropdown-content">   
+                              {% for station in stations %}
+                            <a href="#" class="dropdown-item">
+                                {{ station.name }}                       
+                            </a>
+                                {% endfor %}
+                            </div>
+                            </div>  
+                                    
+                       </div>
+                      </div>
+                      {% endif %}
+                  </div>
+        </form>
+    </div>
+</div>
+
+
+<script>
+$( document ).ready(function(){
+$("#aruco").on("mousedown", function() {
+$.get('/aruco');
+});
+$("#stopAruco").on("mousedown", function() {
+$.get('/stopAruco');
+});
+});
+
+</script>
+{% endblock %}

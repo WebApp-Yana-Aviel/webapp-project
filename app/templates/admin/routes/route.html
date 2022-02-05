@@ -1,0 +1,410 @@
+
+
+{% import "bootstrap/utils.html" as utils %}
+{% extends "base.html" %}
+{% block title %}Search Routes{% endblock %}
+{% block content %}
+{{ super() }}
+<div class="content-section">
+  <br/>
+  {{ utils.flashed_messages() }}
+  <br/>
+  <div class="container">
+    <form id="Search_admin" method="post" action="{{ url_for('admin.search_route') }}" >              
+     <p> Please select search by: </p>         
+       <div class="select is-primary" id="selectAction" >
+         <select name="selected_options"   id="selected_options"  required>
+           <option value="0" {% if selected_options =='' %} selected {% endif %} ></option>
+           <option value="mode" name="mode" id="mySelect_mode" {% if selected_options=="mode" %} selected {% endif %}>Mode</option>
+           <option value="user" name="user" id="mySelect_user" {% if selected_options=="user" %} selected {% endif %}>User</option>
+           <option value="station" name="station" id="mySelect_station" {% if selected_options=="station" %} selected {% endif %}>Station</option>
+           <option value="status" name="status" id="mySelect_status" {% if selected_options=="status" %} selected {% endif %}>Status</option>
+           <option value="fault" name="fault" id="mySelect_fault" {% if selected_options=="fault" %} selected {% endif %}>Fault</option>
+           
+          </select>       
+       </div> 
+     <br>
+        <div class="select is-primary" id="select_user" hidden >
+              <p> Select by user: </p> 
+              <select name="selected_option_user"  id="selected_option_user" required >
+                {% for o in users %} 
+                     <option value="{{ o.id }}">{{ o.name }}</option>
+                {% endfor %}
+              </select>
+              
+        </div>
+              
+         <div class="select is-primary" id="select_mode" hidden >
+           <p> Select by mode: </p>   
+             <select name="selected_option_mode"  id="selected_option_mode" required >
+              {% for o in modes %} 
+                  <option value="{{ o.id}}"{% if selected_options=="{{o.id}}" %} selected {% endif %} >{{ o.name }}</option>
+              {% endfor %}
+             </select>
+           
+         </div>
+       
+              
+         <div class="select is-primary" id="select_station" hidden>
+            <p> Select by station : </p>
+               <select name="selected_option_station"  id="selected_option_station" required>
+              {% for o in station %} 
+                 <option value="{{ o.id }}" {% if selected_options=="{{o.id}}" %} selected {% endif %}} >{{ o.name }}</option>
+              {% endfor %}
+                </select>
+        
+         </div>
+   
+           
+         <div class="select is-primary" id="select_status" hidden >
+          <p> Select by status: </p> 
+            <select name="selected_option_status"  id="selected_option_status" required >
+             {% for o in status %} 
+                <option value="{{ o.id }}" {% if selected_options=="{{o.id}}" %} selected {% endif %}>{{ o.name }}</option>
+             {% endfor %}
+            </select>
+     
+         </div>
+              
+         <div class="select is-primary" id="select_fault" hidden >
+            <p> Select by fault: </p> 
+              <select name="selected_option_fault"  id="selected_option_fault" required >
+              {% for o in faults %} 
+                 <option value="{{ o.id }}" {% if selected_options=="{{o.id}}" %} selected {% endif %}>{{ o.name }}</option>
+              {% endfor %}
+               </select>
+         
+         </div>
+
+         <div  class="center" id="select_data" hidden > 
+         <br>
+          <p> Select a date: </p>  
+          <input class="calendar" id="myCalendar"   name="myCalendar" />
+          <br>
+          <br>     
+         <button class="button is-dark " type="submit"   id="startSearch" >Search</button>
+         </div>
+    </form>
+  </div>
+  <div class="container">
+    {% if file_names %}
+    <table class="table table-striped table-bordered" id="data">
+      <thead>
+              <tr>
+                <th width="5%"> No</th>
+                <th width="15%"> Name of Route </th>
+                <th width="15%"> Name of mode </th>
+                <th width="15%"> Date </th>
+                <th width="15%"> Name of User</th>
+                <th width="15%">Status</th>
+                <th width="15%"> Date update status</th>
+                <th width="15%"> Date start route</th>
+                <th width="20%"> Stations</th>
+                <th width="20%"> Date end station</th>
+                <th width="25%"> If done ?</th>
+                <th width="20%"> If open tris</th>
+                <th width="20%"> Fault </th>
+                <th width="20%"> Delete route</th>
+              </tr>
+      </thead>
+      <tbody>
+          {% for file_name in file_names %}
+             <tr>
+                  <td> {{ file_name.route.id}} </td>
+                  <td> {{ file_name.route.name}}</td>
+                  <td> {{ file_name.route.mode.name}}</td>
+                  <td> {{ file_name.route.date_route.strftime('%Y-%m-%d') }}</td>
+                  <td> {{ file_name.user.name}}</td>
+                  <td> {{ file_name.route.status.name}}</td>
+                  <td> {{ file_name.route.date_update.strftime('%Y-%m-%d')}} </td>
+                  <td> {{ file_name.route.date_start.strftime('%Y-%m-%d')}} </td>
+                  <td>
+                   <table>
+                     {% for station in stations %}
+                     <tr>
+                       {% if file_name.route.id==station.route_id %}
+                     <td> {{ station.station.name}}</td>
+                      {% endif %}
+                     </tr>
+                     {% endfor %}
+                     
+                   </table>
+ 
+                  </td>
+                  <td>
+                    <table>
+                      {% for station in stations %}
+                      <tr>
+                        {% if file_name.route.id==station.route_id %}
+                         {% if station.date_end != None %}
+                      <td> {{ station.date_end.strftime('%Y-%m-%d')}}</td>
+                         {% else %}
+                           <td>   -   </td>
+                       {% endif %}
+                       {% endif %}
+                      </tr>
+                      {% endfor %}
+                    </table>
+  
+                   </td>
+                  <td>
+                    <table>
+                      {% for station in stations %}
+                      <tr>
+                        {% if file_name.route.id==station.route_id %} 
+                          {% if station.station_id == station.station.id %}
+                             <td> {{ station.is_Done }} </td>     
+                              {% if file_name.route.status_id == 4 %}
+                                 {% if station.is_Done == 0 %}
+                                  <td> 
+                                    <a href="{{ url_for('admin.delete_station_route',route_id=file_name.route.id,station_id=station.station_id) }}">
+                                      <i class="fa fa-trash"></i> Delete 
+                                   </a>
+                                  </td>
+                                {% endif %}
+                              {% endif %}
+                          {% endif %}
+                        {% endif %}
+                      </tr>
+                       {% endfor %}
+                    </table>
+  
+                   </td>
+                   <td>
+                    <table>
+                      {% for station in stations %}
+                      <tr>
+                        {% if file_name.route.id==station.route_id %}
+                        
+                      <td> {{ station.is_Open }}</td>
+                    
+                       {% endif %}
+                      </tr>
+                       {% endfor %}
+                    </table>
+  
+                   </td>
+                   <td>
+                    <table>
+                      {% for log in log_user %}
+                      <tr>
+                        {% if log.route_id==file_name.route.id %}
+                        {% if file_name.route.status_id==4  %}
+                        {% if log.fault.name != None %}
+                        <td> {{ log.fault.name }}</td>
+                        {% else %}
+                        <td>  - </td>
+                        {% endif %}
+                        {% endif %}
+                        {% endif %}
+                      </tr>
+                       {% endfor %}
+                    </table>
+  
+                   </td>
+                   
+                  
+              <td>
+                <a href="{{ url_for('admin.delete_route',id=file_name.route.id) }}">
+                  <i class="fa fa-trash"></i> Delete 
+                </a>
+              </td>
+            </tr>
+          {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <div style="text-align: center">
+    {% else %}
+      <div style="text-align: center">
+        <h3> No route have been added. </h3>
+        <hr class="intro-divider">
+    {% endif %}
+     
+      </div>
+  </div>
+</div>
+
+{% endblock %}
+{% block scripts %}
+
+<script type="text/javascript">  
+  document.querySelector('#selected_options').onchange = changeEventHandler;
+
+  function changeEventHandler(event) {
+  const span = document.querySelector('#text');   
+  if (!event.target.value) span.innerHTML = 'Please Select One';   
+  else 
+          switch(event.target.value)
+          { 
+            case "user":
+              document.getElementById('select_user').hidden=false;
+              document.getElementById('select_status').hidden=true;
+              document.getElementById('select_station').hidden=true;
+              document.getElementById('select_mode').hidden=true;
+              document.getElementById('select_fault').hidden=true;
+              document.getElementById('select_data').hidden=false;
+              alert(event.target.value);
+              break;
+            case "mode":
+              document.getElementById('select_user').hidden=true;
+              document.getElementById('select_status').hidden=true;
+              document.getElementById('select_station').hidden=true;
+              document.getElementById('select_mode').hidden=false;
+              document.getElementById('select_fault').hidden=true;
+              document.getElementById('select_data').hidden=false;        
+              alert(event.target.value);
+              break;
+            case "station":
+              document.getElementById('select_user').hidden=true;
+              document.getElementById('select_status').hidden=true;
+              document.getElementById('select_station').hidden=false;
+              document.getElementById('select_mode').hidden=true;
+              document.getElementById('select_fault').hidden=true;
+              document.getElementById('select_data').hidden=false;
+             
+              alert(event.target.value);
+              break;
+            case "status":
+              document.getElementById('select_user').hidden=true;
+              document.getElementById('select_status').hidden=false;
+              document.getElementById('select_station').hidden=true;
+              document.getElementById('select_mode').hidden=true;
+              document.getElementById('select_data').hidden=false;
+              document.getElementById('select_fault').hidden=true;
+             
+              alert(event.target.value);
+              break;
+            case "fault":
+              document.getElementById('select_user').hidden=true;
+              document.getElementById('select_status').hidden=true;
+              document.getElementById('select_station').hidden=true;
+              document.getElementById('select_mode').hidden=true;
+              document.getElementById('select_data').hidden=false;
+              document.getElementById('select_fault').hidden=false;      
+              alert(event.target.value);
+              break;
+
+            default:
+              document.getElementById('select_user').hidden=true;
+              document.getElementById('select_status').hidden=true;
+              document.getElementById('select_station').hidden=true;
+              document.getElementById('select_mode').hidden=true;
+              document.getElementById('select_data').hidden=true;
+              document.getElementById('select_fault').hidden=true;
+              alert(event.target.value);
+              break;           
+         
+          }        
+  }
+
+  var myCal = bulmaCalendar.attach('.calendar', {
+    type : 'date',
+    color: 'primary',
+    // enables date range selection
+    isRange: true,
+    // allows the same day
+    allowSameDayRange: true,
+    // internationalization
+    lang: navigator.language || 'en-US',
+    // custom date/time/month/year formats here
+    dateFormat: 'yyyy-MM-dd',
+    navigationMonthFormat: 'MMMM',
+    navigationYearFormat: 'yyyy',
+    headerMonthYearFromat: 'MMMM yyyy',
+    // dialog or inline
+    displayMode: 'dialog',
+    // allows to edit time manually
+    // position
+    position: 'auto',
+    // shows header
+    showHeader: true,
+    // top or bottom
+    headerPosition: 'top',
+    // shows footer
+    showFooter: true,
+    // shows buttons
+    showButtons: true,
+    showTodayButton: true,
+    showClearButton: true,
+    // custom labels here
+    cancelLabel: 'Cancel',
+    clearLabel: 'Clear',
+    todayLabel: 'Today',
+    nowLabel: 'Now',
+    validateLabel: 'Validate',
+    // allows to switch between months and years
+    enableMonthSwitch: true,
+    enableYearSwitch: true,
+    // start/end dates
+    // Date | String
+    startDate: undefined,
+    endDate: undefined,
+    // min/max dates
+    // Date | String
+    minDate: null,
+    maxDate: null,
+    // disable dates
+    // Date[] | String[] | Function(this, day)
+    disabledDates: [],
+    // disable week days
+    // Number[] | String '1,2,3,...'
+    disabledWeekDays: undefined,
+    // highlighted dates
+    // Date[] | String[] | Function(this, day)
+    highlightedDates: [],
+    // 0 = Sunday
+    weekStart: 0,
+    // start/end times 
+    // Date | String
+
+    // from/to labels
+    labelFrom: 'from',
+    labelTo: 'to',
+    // closes the date picker by clicking the overlay
+    closeOnOverlayClick: true,
+    // closes the date picker after selection
+    closeOnSelect: true,
+    // toggles the date picker when clicking on the input
+    toggleOnInputClick: true,
+    // callbacks
+    onReady: function(datepicker) {
+    //alert(datepicker.data.value());
+  },
+    onValidate: null,
+    // custom icons
+    icons: {
+      previous: '<svg viewBox="0 0 50 80" xml:space="preserve">\n      <polyline fill="none" stroke-width=".5em" stroke-linecap="round" stroke-linejoin="round" points="45.63,75.8 0.375,38.087 45.63,0.375 "/>\n    </svg>',
+      next: '<svg viewBox="0 0 50 80" xml:space="preserve">\n      <polyline fill="none" stroke-width=".5em" stroke-linecap="round" stroke-linejoin="round" points="0.375,0.375 45.63,38.087 0.375,75.8 "/>\n    </svg>',
+      date: '<svg version="1.1" x="0px" y="0px" viewBox="0 0 60 60" xml:space="preserve">\n      <g>\n        <path d="M57,4h-7V1c0-0.553-0.447-1-1-1h-7c-0.553,0-1,0.447-1,1v3H19V1c0-0.553-0.447-1-1-1h-7c-0.553,0-1,0.447-1,1v3H3C2.447,4,2,4.447,2,5v11v43c0,0.553,0.447,1,1,1h54c0.553,0,1-0.447,1-1V16V5C58,4.447,57.553,4,57,4z M43,2h5v3v3h-5V5V2z M12,2h5v3v3h-5V5V2z M4,6h6v3c0,0.553,0.447,1,1,1h7c0.553,0,1-0.447,1-1V6h22v3c0,0.553,0.447,1,1,1h7c0.553,0,1-0.447,1-1V6h6v9H4V6zM4,58V17h52v41H4z"/>\n        <path d="M38,23h-7h-2h-7h-2h-9v9v2v7v2v9h9h2h7h2h7h2h9v-9v-2v-7v-2v-9h-9H38z M31,25h7v7h-7V25z M38,41h-7v-7h7V41z M22,34h7v7h-7V34z M22,25h7v7h-7V25z M13,25h7v7h-7V25z M13,34h7v7h-7V34z M20,50h-7v-7h7V50z M29,50h-7v-7h7V50z M38,50h-7v-7h7V50z M47,50h-7v-7h7V50z M47,41h-7v-7h7V41z M47,25v7h-7v-7H47z"/>\n      </g>\n    </svg>'
+    }
+    
+ });
+
+ // Loop on each calendar initialized
+ for(var i = 0; i < myCal.length; i++) {
+	// Add listener to select event
+	myCal[i].on('select', date => {
+		console.log(date);
+	});
+ }
+
+// To access to bulmaCalendar instance of an element
+ var element = document.querySelector('#myCalendar');
+  if (element) {
+	// bulmaCalendar instance is available as element.bulmaCalendar
+	element.bulmaCalendar.on('select', function(datepicker) {
+		console.log(datepicker.data.value());
+	});
+ }
+
+ $(document).ready(function () {
+      $('#data').DataTable();
+    });
+ 
+
+</script>
+{% endblock%}
+    
+
+

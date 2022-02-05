@@ -1,0 +1,69 @@
+{% import "bootstrap/utils.html" as utils %}
+{% extends "base.html" %}
+{% block title %}Users{% endblock %}
+{% block content %}
+
+
+
+  <div class="content-section">
+        <br/>
+        {{ utils.flashed_messages() }}
+        <br/>
+
+        <h1 style="text-align:center;">Users</h1>
+          <hr class="intro-divider">
+          <div class="center">
+            <a href="{{ url_for('admin.add_user') }}" class="button is-primary is_outlined">
+              <i class="fa fa-plus"></i>
+              Add User
+            </a>
+            {% if users %}
+             <table class="table table-striped table-bordered">
+               <thead>
+                 <tr>
+                   <th width="15%"> Name </th>
+                   <th width="40%"> Email </th>
+                   <th width="30%"> Phone</th>
+                   <th width="30%"> Is active?</th>
+                   <th width="15%"> Edit </th>
+                   <th width="15%"> Delete </th>
+                 </tr>
+               </thead>
+               <tbody >
+               {% for user in users %}
+                   <tr>
+                     <td > {{ user.name }} </td>
+                     <td> {{ user.email }} </td> 
+                     <td>  {{ user.phone }}</td>    
+                     <td>  {{ user.is_activity_user }}</td>            
+                     <td>
+                        {% set default_value ='admin' %}
+                       <a href="{{ url_for('admin.edit_user', id=user.id) }}"  {% if user.name == default_value %}  hidden {% endif %} >
+                         <i class="fa fa-pencil"></i> Edit 
+                       </a>
+                     </td>
+                     <td>
+                       {% set default_value ='admin' %}
+                        <a href="{{ url_for('admin.delete_user', id=user.id) }}"  {% if user.name == default_value %}  hidden {% endif %} >
+                           <i class="fa fa-trash"></i> Delete 
+                        </a>
+                     </td>
+                   </tr>
+               {% endfor %}
+                </tbody>
+          </table>
+          </div>
+          <div style="text-align: center">
+         {% else %}
+          <div style="text-align: center">
+            <h3> No user have been added. </h3>
+            <hr class="intro-divider">
+        {% endif %}
+          
+          </div>
+          </div>
+  </div>
+
+
+  
+{% endblock %}

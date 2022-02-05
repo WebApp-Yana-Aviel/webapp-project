@@ -1,0 +1,65 @@
+{% import "bootstrap/utils.html" as utils %}
+{% extends "base.html" %}
+
+{% block title %} Modes {% endblock %}
+
+
+{% block content %}
+  <div class="content-section">
+        <br/>
+        {{ utils.flashed_messages() }}
+        <br/>
+
+        <h1 style="text-align:center;">Modes</h1>
+          <hr class="intro-divider">
+          <div class="center">
+            <a href="{{ url_for('admin.add_mode') }}" class="button is-primary is_outlined">
+              <i class="fa fa-plus"></i>
+              Add Mode
+            </a>
+            {% if modes %}
+             <table class="table table-striped table-bordered">
+               <thead>
+                 <tr>
+                   <th width="40%"> Name </th>
+                   <th width="15%"> Edit </th>
+                   <th width="15%"> Delete </th>
+                 </tr>
+               </thead>
+               <tbody>
+               {% for mode in modes %}
+                   <tr>
+                     <td> {{ mode.name }} </td>
+                     <td>
+                      {% set default_value ='Basic' %}
+                      {% set default_value1 ='Security patrol' %}
+                  
+                       <a href="{{ url_for('admin.edit_mode', id=mode.id) }}"  {% if mode.name == default_value  %}  hidden {% endif %}{% if  mode.name == default_value1 %}  hidden {% endif %}>
+                         <i class="fa fa-pencil"></i> Edit 
+                       </a>
+                     </td>
+                     <td>
+                        {% set default_value2='Distribution of objects' %}
+                        <a href="{{ url_for('admin.delete_mode', id=mode.id) }}" {% if mode.name == default_value %}  hidden {% endif %}{% if  mode.name == default_value1 %}  hidden {% endif %}{% if  mode.name == default_value2 %}  hidden {% endif %}>
+                           <i class="fa fa-trash"></i> Delete 
+                        </a>
+                     </td>
+                   </tr>
+               {% endfor %}
+                </tbody>
+          </table>
+          </div>
+          <div style="text-align: center">
+         {% else %}
+          <div style="text-align: center">
+            <h3> No mode have been added. </h3>
+            <hr class="intro-divider">
+        {% endif %}
+       
+          </div>
+          </div>
+  </div>
+
+
+  
+{% endblock %}

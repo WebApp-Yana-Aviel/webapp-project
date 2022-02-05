@@ -1,0 +1,305 @@
+{% import "bootstrap/utils.html" as utils %}
+{% extends "base.html" %}
+{% block content %}
+
+   <div class="container">
+     <form id="HistorySearch" method="post" action="/search" >
+            <p> Select an action: </p>         
+               <div class="select is-primary" id="selectAction" >
+                  <select name="selected_options"  id="mySelect"  required>
+                     <option value="" {% if selected_options =='' %} selected {% endif %} ></option>
+                     <option value="photos" name="photos" id="photos" {% if selected_options=="photos" %} selected {% endif %}>Photos</option>
+                     <option value="videos" name="videos" id="videos" {% if selected_options=="videos" %} selected {% endif %}>Videos</option>
+                     <option value="routes" name="routes" id="routes" {% if selected_options=="routes" %} selected {% endif %}>Routes</option>
+                  </select>
+               </div>
+       
+          <p> Select a date: </p>  
+          <input class="calendar" id="myCalendar"  name="myCalendar" required />
+          <br>
+          <br>     
+            <button class="button is-dark " type="submit"  id="startHistory" >Search</button>
+     </form>
+     {% if type_file=='images' %}
+     <div class="w3-content w3-display-container">
+      {% if file_names %}
+        {% for file_name in file_names %} 
+          <div class="w3-display-container mySlides">
+            <p>
+              <a href="{{ url_for('home.delete_photo', file_name=file_name) }}"  class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-trash"></span></a>
+            </p>
+            <br>
+            <br>      
+              <a href="{{ url_for('static', filename='images/Temp/'+ file_name) }}" id="link" >                                     
+                   <img src="{{ url_for('static', filename='images/Temp/'+ file_name) }}" >                             
+              </a>
+          </div> 
+        
+         {% endfor %}
+      {% endif %}
+             
+       <button class="w3-button w3-display-left w3-black" onclick="plusSlides(-1)">&#10094;</button>
+       <button class="w3-button w3-display-right w3-black" onclick="plusSlides(1)">&#10095;</button>
+            
+             
+     </div>
+     {% endif %}
+
+    
+     {% if type_file=='videos' %}
+       <div class="w3-content w3-display-container">
+        {% if file_names %}
+         {% for file_name in file_names %} 
+           <div class="w3-display-container mySlides">
+               <div class="w3-display-container mySlides">
+                   <p>
+                       <a href="{{ url_for('home.delete_video', file_name=file_name) }}" class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-trash"></span></a>
+                   </p>
+                   <br>
+                   <br>
+                   <a href="{{ url_for('static', filename='videos/Temp/'+ file_name) }}" id="link">
+                       <video width="320" height="240" controls>
+                           <source src="{{ url_for('static', filename='videos/Temp/'+ file_name) }}" type="video/mp4">
+
+                       </video>
+                   </a>
+               </div>
+               {% endfor %}
+               {% endif %}
+
+               <button class="w3-button w3-display-left w3-black" onclick="plusSlides(-1)">&#10094;</button>
+               <button class="w3-button w3-display-right w3-black" onclick="plusSlides(1)">&#10095;</button>
+           </div>
+     {% endif %}
+           
+            
+
+
+   {% if type_file=='routes' %}
+   <div class="content-section">
+    <h1 style="text-align:center;">Routes</h1>
+    {% if file_names %}
+      <hr class="intro-divider">
+      <div class="center">
+         <table class="table table-striped table-bordered">
+           <thead>
+             <tr>
+               <th width="10%"> No</th>
+               <th width="20%"> Name of Route </th>
+               <th width="15%"> Name of mode </th>
+               <th width="15%"> Date </th>
+               <th width="15%">Status</th>
+               <th width="15%"> Date update status</th>
+               <th width="30"> Stations</th>
+               <th width="15%"> Delete </th>
+               <th width="15%"> Start of route</th>
+             </tr>
+           </thead>
+           <tbody>
+           {% for file_name in file_names %}
+               <tr>
+                 <td> {{ file_name.route_id}} </td>
+                 <td> {{ file_name.name_route}}</td>
+                 <td> {{ file_name.mode.name_mode}}</td>
+                 <td> {{ file_name.date_route}}</td>
+                 <td> {{ file_name.status.status_route}}</td>
+                 <td> {{ file_name.date_update}} </td>
+
+                 <td>
+                  <table>
+                    {% for station in stations %}
+                    <tr>
+                      {% if file_name.route_id==station.route_id %}
+                    <td> {{ station.station.name_station}}</td>
+                     {% endif %}
+                    </tr>
+                     {% endfor %}
+                    </table>
+
+                 </td>
+                 <td>
+                    <a href="{{ url_for('home.delete_route', route_id=file_name.route_id) }}" {% if file_name.name_route == default_value %}  hidden {% endif %}>
+                       <i class="fa fa-trash"></i> Delete 
+                    </a>
+                 </td>
+                 <td>
+                  <a href="{{ url_for('home.start_route', route_id=file_name.route_id) }}" {% if file_name.name_route == default_value %}  hidden {% endif %}>
+                    <i class="fa fa-trash"></i> Start route 
+                 </a>
+                 </td>
+               </tr>
+              
+
+           {% endfor %}
+            </tbody>
+      </table>
+      </div>
+
+     {% endif %}
+     
+    {% endif %}
+ 
+   </div>
+   </div>
+   
+
+
+<script type="text/javascript">
+ var form = document.getElementById('HistorySearch');
+
+ function loadData(){
+  var data = JSON.parse(localStorage.getItem(form.id));
+  if(data != null){ // проверка на null и undefined
+    form.elements.forEach(function(element){
+      element.value = data[element.name];
+    });
+  }
+ }
+
+ function saveData(){
+  var data = {};
+  form.elements.forEach(function(element){
+    data[element.name] = element.value;
+  });
+  localStarage.setItem(form.id, JSON.stringify(data));
+ }
+
+ loadData();
+
+ form.addEventListener('submit', saveData, false);
+
+ var myCal = bulmaCalendar.attach('.calendar', {
+    type : 'date',
+    color: 'primary',
+    // enables date range selection
+    isRange: true,
+    // allows the same day
+    allowSameDayRange: true,
+    // internationalization
+    lang: navigator.language || 'en-US',
+    // custom date/time/month/year formats here
+    dateFormat: 'yyyy-MM-dd',
+    navigationMonthFormat: 'MMMM',
+    navigationYearFormat: 'yyyy',
+    headerMonthYearFromat: 'MMMM yyyy',
+    // dialog or inline
+    displayMode: 'dialog',
+    // allows to edit time manually
+    // position
+    position: 'auto',
+    // shows header
+    showHeader: true,
+    // top or bottom
+    headerPosition: 'top',
+    // shows footer
+    showFooter: true,
+    // shows buttons
+    showButtons: true,
+    showTodayButton: true,
+    showClearButton: true,
+    // custom labels here
+    cancelLabel: 'Cancel',
+    clearLabel: 'Clear',
+    todayLabel: 'Today',
+    nowLabel: 'Now',
+    validateLabel: 'Validate',
+    // allows to switch between months and years
+    enableMonthSwitch: true,
+    enableYearSwitch: true,
+    // start/end dates
+    // Date | String
+    startDate: undefined,
+    endDate: undefined,
+    // min/max dates
+    // Date | String
+    minDate: null,
+    maxDate: null,
+    // disable dates
+    // Date[] | String[] | Function(this, day)
+    disabledDates: [],
+    // disable week days
+    // Number[] | String '1,2,3,...'
+    disabledWeekDays: undefined,
+    // highlighted dates
+    // Date[] | String[] | Function(this, day)
+    highlightedDates: [],
+    // 0 = Sunday
+    weekStart: 0,
+    // start/end times 
+    // Date | String
+
+    // from/to labels
+    labelFrom: 'from',
+    labelTo: 'to',
+    // closes the date picker by clicking the overlay
+    closeOnOverlayClick: true,
+    // closes the date picker after selection
+    closeOnSelect: true,
+    // toggles the date picker when clicking on the input
+    toggleOnInputClick: true,
+    // callbacks
+    onReady: function(datepicker) {
+    //alert(datepicker.data.value());
+  },
+    onValidate: null,
+    // custom icons
+    icons: {
+      previous: '<svg viewBox="0 0 50 80" xml:space="preserve">\n      <polyline fill="none" stroke-width=".5em" stroke-linecap="round" stroke-linejoin="round" points="45.63,75.8 0.375,38.087 45.63,0.375 "/>\n    </svg>',
+      next: '<svg viewBox="0 0 50 80" xml:space="preserve">\n      <polyline fill="none" stroke-width=".5em" stroke-linecap="round" stroke-linejoin="round" points="0.375,0.375 45.63,38.087 0.375,75.8 "/>\n    </svg>',
+      date: '<svg version="1.1" x="0px" y="0px" viewBox="0 0 60 60" xml:space="preserve">\n      <g>\n        <path d="M57,4h-7V1c0-0.553-0.447-1-1-1h-7c-0.553,0-1,0.447-1,1v3H19V1c0-0.553-0.447-1-1-1h-7c-0.553,0-1,0.447-1,1v3H3C2.447,4,2,4.447,2,5v11v43c0,0.553,0.447,1,1,1h54c0.553,0,1-0.447,1-1V16V5C58,4.447,57.553,4,57,4z M43,2h5v3v3h-5V5V2z M12,2h5v3v3h-5V5V2z M4,6h6v3c0,0.553,0.447,1,1,1h7c0.553,0,1-0.447,1-1V6h22v3c0,0.553,0.447,1,1,1h7c0.553,0,1-0.447,1-1V6h6v9H4V6zM4,58V17h52v41H4z"/>\n        <path d="M38,23h-7h-2h-7h-2h-9v9v2v7v2v9h9h2h7h2h7h2h9v-9v-2v-7v-2v-9h-9H38z M31,25h7v7h-7V25z M38,41h-7v-7h7V41z M22,34h7v7h-7V34z M22,25h7v7h-7V25z M13,25h7v7h-7V25z M13,34h7v7h-7V34z M20,50h-7v-7h7V50z M29,50h-7v-7h7V50z M38,50h-7v-7h7V50z M47,50h-7v-7h7V50z M47,41h-7v-7h7V41z M47,25v7h-7v-7H47z"/>\n      </g>\n    </svg>'
+    }
+    
+ });
+
+ // Loop on each calendar initialized
+ for(var i = 0; i < myCal.length; i++) {
+	// Add listener to select event
+	myCal[i].on('select', date => {
+		console.log(date);
+	});
+ }
+
+// To access to bulmaCalendar instance of an element
+ var element = document.querySelector('#myCalendar');
+  if (element) {
+	// bulmaCalendar instance is available as element.bulmaCalendar
+	element.bulmaCalendar.on('select', function(datepicker) {
+		console.log(datepicker.data.value());
+	});
+ }
+
+
+
+ var slidePosition = 1;
+ SlideShow(slidePosition);
+
+// forward/Back controls
+ function plusSlides(n) {
+  SlideShow(slidePosition += n);
+ }
+
+//  images controls
+ function currentSlide(n) {
+   SlideShow(slidePosition = n);
+ }
+
+ function SlideShow(n) {
+  var i;
+  var slides = document.getElementsByClassName("mySlides");
+  if (n > slides.length) {slidePosition = 1}
+  if (n < 1) {slidePosition = slides.length}
+  for (i = 0; i < slides.length; i++) {
+      slides[i].style.display = "none";
+  }
+
+  slides[slidePosition-1].style.display = "block";
+  circles[slidePosition-1].className += " enable";
+ } 
+
+
+
+
+/* Video */
+</script>
+
+{% endblock %}

@@ -1,0 +1,61 @@
+{% import "bootstrap/utils.html" as utils %}
+{% extends "base.html" %}
+  {% block title %}Faults{% endblock %}
+
+
+{% block content %}
+
+
+
+  <div class="content-section">
+        <br/>
+        {{ utils.flashed_messages() }}
+        <br/>
+
+        <h1 style="text-align:center;">Faults</h1>
+      
+        <hr class="intro-divider">
+          <div class="center">
+            <a href="{{ url_for('admin.add_fault') }}" class="button is-primary is_outlined">
+              <i class="fa fa-plus"></i>
+              Add Fault
+            </a>
+            {% if faults %}
+             <table class="table table-striped table-bordered">
+               <thead>
+                 <tr>
+                   <th width="20%"> Name </th>
+                   <th width="15%"> Delete </th>
+                 </tr>
+               </thead>
+               <tbody>
+               {% for fault in faults %}
+                   <tr>
+                    {% set default_value ='High temperature' %}
+                    {% set default_value1 ='Obstacle' %}
+                    {% set default_value2 ='Other' %}
+                     <td> {{ fault.name }} </td>
+                     <td>
+                      <a href="{{ url_for('admin.delete_fault', id=fault.id) }}" {% if fault.name == default_value %}  hidden {% endif %}{% if  fault.name == default_value1 %}  hidden {% endif %}{% if fault.name == default_value2 %}  hidden {% endif %}>
+                         <i class="fa fa-trash"></i> Delete 
+                      </a>
+                   </td>
+                   </tr>
+               {% endfor %}
+                </tbody>
+          </table>
+          </div>
+          <div style="text-align: center">
+         {% else %}
+          <div style="text-align: center">
+            <h3> No fault have been added. </h3>
+            <hr class="intro-divider">
+        {% endif %}
+      
+          </div>
+          </div>
+  </div>
+
+
+  
+{% endblock %}
