@@ -12,7 +12,7 @@ def temperature_of_raspberry_pi():
 while True:
     time.sleep(5)
     temp=float(temperature_of_raspberry_pi())
-    if(temp > 79):
+    if(temp > 70):
       message="Hi admin! Temperature is:" + str(temp)+"!!!!"
       send_sms_admin_message(message)
       print(temperature_of_raspberry_pi())
