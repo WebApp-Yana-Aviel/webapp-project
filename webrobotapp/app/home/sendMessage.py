@@ -8,7 +8,7 @@ def send_sms_admin_message(route):
     message_route="The route failed. Please check route number :"
     admin=User.query.filter(User.name=='admin').first()
     if(admin is None):
-        phone='+972549111254'
+        phone='+972XXXXXXXX'
     else:
         phone=admin.phone
     # check to see if the Twilio should be used
