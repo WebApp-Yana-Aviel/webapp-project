@@ -88,7 +88,7 @@ def action(msg):
     elif command=="/routes_fault":
         count=0
         date_now=datetime.datetime.now()
-        conn=sqlite3.connect('dev_app.db',check_same_thread=False)
+        conn=sqlite3.connect('produc_app.db',check_same_thread=False)
         cursor=conn.cursor()
         SQL="SELECT * from routes where status_id='2'"
         cursor.execute(SQL)
