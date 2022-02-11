@@ -25,9 +25,9 @@ class Config(object):
     MAIL_PORT = 465
     MAIL_USE_TLS = False
     MAIL_USE_SSL = True
-    MAIL_USERNAME = os.environ.get('webrobotapp2021@gmail.com')
-    MAIL_PASSWORD = os.environ.get('gdwedgjwfdihlaoh')
-    MAIL_DEFAULT_SENDER = os.getenv('MAIL_USERNAME', default='webrobotapp2021@gmail.com')
+    MAIL_USERNAME = os.environ.get('xxxxx@gmail.com')
+    MAIL_PASSWORD = os.environ.get('')
+    MAIL_DEFAULT_SENDER = os.getenv('MAIL_USERNAME', default='xxxxx@gmail.com')
   
 
     SQLALCHEMY_TRACK_MODIFICATIONS = False
