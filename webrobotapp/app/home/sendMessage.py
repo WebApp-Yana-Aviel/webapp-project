@@ -1,10 +1,16 @@
 import json
 from twilio.rest import Client
+from ..models import User
 
 conf_path='/home/webrgacv/webrobotapp/app/home/conf/twilio.json'
 
 def send_sms_admin_message(route):
     message_route="The route failed. Please check route number :"
+    admin=User.query.filter(User.name=='admin').first()
+    if(admin is None):
+        phone='+972549111254'
+    else:
+        phone=admin.phone
     # check to see if the Twilio should be used
     f=open(conf_path)
     data=json.load(f)
@@ -13,7 +19,7 @@ def send_sms_admin_message(route):
         message = client.messages.create( 
                               from_='+972526987310',  
                               body='Hi, admin! '+ message_route+str(route),     
-                              to='972549111254'
+                              to=phone
                             
                           )
     f.close()
