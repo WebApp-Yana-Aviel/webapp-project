@@ -78,7 +78,7 @@ def send_email_admin_fault(name_fault,message_admin):
     #token = user.get_reset_token()
     print("[INFO]send email to support - add fault")
     send_email_fault('[WebRobotApp] Admin - add fault',
-               sender='yanaabadaev@gmail.com',
+               sender='***********@gmail.com',
                recipients='webrobotapp2021@gmail.com',
                text_body= f'''
     Dear support team,
