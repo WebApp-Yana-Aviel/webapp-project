@@ -33,8 +33,8 @@ def create_app(config_name):
     manager=Manager(app)
     app.config['MAIL_SERVER']='smtp.gmail.com'
     app.config['MAIL_PORT']=465
-    app.config['MAIL_USERNAME']='webrobotapp2021@gmail.com'
-    app.config['MAIL_PASSWORD']='gdwedgjwfdihlaoh'
+    app.config['MAIL_USERNAME']='xxxxx@gmail.com'
+    app.config['MAIL_PASSWORD']=''
     app.config['MAIL_USE_TLS']=False
     app.config['MAIL_USE_SSL']=True
     mail.init_app(app)
