@@ -56,7 +56,7 @@ class UserForm_Edit(FlaskForm):
 
 class ModeForm(FlaskForm):
     """
-    Form for admin to add or edit a model
+    Form for admin to add or edit a mode
     """
     name = StringField('name', validators=[DataRequired()])
     submit = SubmitField('Submit')
@@ -79,7 +79,7 @@ class StationForm(FlaskForm):
 
 class FaultsForm(FlaskForm):
     """
-    Form for admin to add or edit a station
+    Form for admin to add or edit a fault
     """
     name = StringField('name', validators=[DataRequired()])
     
