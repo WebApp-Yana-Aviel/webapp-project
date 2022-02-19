@@ -2,7 +2,7 @@
 #flask shell 
 from app.models import User,StatusRoute,Station,Faults,Route,Mode
 from app import db
-admin=User(name="admin",email="admin@admin.com",phone="+972549111254",is_admin=True)
+admin=User(name="admin",email="admin@admin.com",phone="+972xxxxxxxxx",is_admin=True)
 admin.set_password("admin2021")
 db.session.add(admin)
 
