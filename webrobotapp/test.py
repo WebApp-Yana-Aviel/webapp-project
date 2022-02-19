@@ -25,10 +25,10 @@ class TestBase(TestCase):
         db.create_all()
 
         # create test admin user
-        admin = User(name="admin",email="admin@admin.com",is_admin=True ,phone="+972549111254")
+        admin = User(name="admin",email="admin@admin.com",is_admin=True ,phone="+972xxxxxxxx")
         admin.set_password("admin2021")
         # create test non-admin user
-        user = User(name="test_user",email="test_user@admin.com",phone="+972549111254")
+        user = User(name="test_user",email="test_user@admin.com",phone="+972xxxxxxxx")
         user.set_password("test2021")
 
         # save users to database
